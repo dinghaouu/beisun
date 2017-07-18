@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+           http://www.springframework.org/schema/context 
+           http://www.springframework.org/schema/context/spring-context-4.3.xsd
+           http://www.springframework.org/schema/tx
+		   http://www.springframework.org/schema/tx/spring-tx.xsd
+		   http://www.springframework.org/schema/jee 
+		   http://www.springframework.org/schema/jee/spring-jee.xsd">
+
+<!--   	<jee:jndi-lookup id="jndidsC" jndi-name="CIMSDC_P" /> -->
+
+	<bean id="dataSourceC"
+		class="org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy">
+		<property name="targetDataSource" ref="alibaba_dataSource_Oracle" />
+	</bean>
+	
+	<bean id="sqlSessionFactoryC" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSourceC" />
+		<property name="typeAliasesPackage" value="com.beisun.dinghao.model" />
+ 		<property name="mapperLocations" value="classpath:com/beisun/dinghao/mapper/**/*.xml" />
+	</bean>
+	
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryC"/>
+		<property name="basePackage" value="com.beisun.dinghao.mapper" />
+	</bean>
+	<!-- transaction manager, use JtaTransactionManager for global tx -->
+	<bean id="transactionManagerC"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSourceC" />
+		<qualifier value="txC" />
+	</bean>
+	<!-- 全注解方式   需加上@Transactional -->
+	<tx:annotation-driven transaction-manager="transactionManagerC" />
+
+</beans>

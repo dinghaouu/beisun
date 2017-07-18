@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="off">
+    <appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <ThresholdFilter level="trace" onMatch="ACCEPT" onMismatch="DENY" />
+            <PatternLayout pattern="[imscenter] %d{HH:mm:ss.SSS} %-5level %L %c{1} %M - %msg%xEx%n" />
+        </Console>
+        <!-- 1   -->
+        <RollingRandomAccessFile name="imscenter"
+            fileName="/Users/DingHao/Development/IdeaProject/Log/imscenter.log" immediateFlush="false" append="true"
+            filePattern="/Users/DingHao/Development/IdeaProject/Log/$${date:yyyy-MM}/imscenter-%d{MM-dd-yyyy}-%i.log.gz">
+            <PatternLayout>
+                <pattern>[upload] %d %-5level %c{1} %line - %msg%xEx%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="250 MB" />
+            </Policies>
+        </RollingRandomAccessFile>
+        <!-- 1   -->
+        <Async name="Async_imscenter" includeLocation="true">
+            <AppenderRef ref="imscenter" />
+        </Async>
+    </appenders>
+    <loggers>
+        <!-- 1   -->
+        <logger name="com.beisun.dinghao" level="debug" additivity="false">
+            <appender-ref ref="Async_imscenter" />
+        </logger>
+    </loggers>
+</configuration>
